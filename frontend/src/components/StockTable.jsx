@@ -5,7 +5,7 @@ import Modal from './Modal';
 const StockTable = () => {
 
     const [stocks, setStocks] = useState([]);
-    var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
+    // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
     return (
         <>
             
@@ -43,7 +43,7 @@ const StockTable = () => {
                                     {/* {stocks.map((item) => (
                                         <StockRow key={item.name} symbol={item.name} />
                                     ))} */}
-                                    {localStocks.map((item) => (
+                                    {stocks.map((item) => (
                                         <StockRow key={item.name} symbol={item.name} />
                                     ))}
                                 </tbody>

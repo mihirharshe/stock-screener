@@ -269,6 +269,9 @@ app.get("/bse/getTopTurnOvers", (req, res, next) => {
     });
 });
 
+app.get("/api", (req, res) => {
+  res.send(`TEST API RUNNING ON PORT ${PORT}`)
+})
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/frontend/build/index.html'));
