@@ -13,7 +13,13 @@ const StockRow = ({ symbol }) => {
 
     const fetchData = async () => {
         try {
-            const res = await fetch(`/nse/get_quote_info?companyName=${symbol}`)
+            const token = localStorage.getItem('token');
+            const res = await fetch(`/nse/get_quote_info?companyName=${symbol}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token
+                }
+            })
             setResponse(await res.json());
         }
         catch (err) {
@@ -21,38 +27,8 @@ const StockRow = ({ symbol }) => {
         }
     }
 
-
-
-    // useEffect(() => {
-
-    //     const intervalId = setInterval(() => {
-    //         fetch(`http://localhost:5000/nse/get_quote_info?companyName=${props.symbol}`)
-    //             .then(resp => resp.json())
-    //             .then(data => {
-    //                 setResponse(data)
-    //             })
-    //     }, 5000)
-
-    //     return () => clearInterval(intervalId);
-    // }, []);
-
-    // useEffect(() => {
-    //     fetch(`http://localhost:5000/nse/get_quote_info?companyName=${props.symbol}`)
-    //         .then(resp => resp.json())
-    //         .then(data => {
-    //             setResponse(data)
-    //         })
-    // }, [])
-    // const getData = () => {
-    //     fetchData();
-    //     setInterval(async ()=>{
-    //         fetchData();
-    //     } ,30000)
-    // }
-
-
     // Fetches data on first render
-    useEffect(() => { 
+    useEffect(() => {
         fetchData();
         // eslint-disable-next-line
     }, [])
@@ -94,6 +70,11 @@ const StockRow = ({ symbol }) => {
                             </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
+
+                            {/* If percent change > 0 then color green.
+                                If pChange < 0 then color red
+                                If pChange = 0 then neutral color */}
+
                             <div className={(response.data?.[0].pChange > 0) ? 'text-sm text-green-600' :
                                 (response.data?.[0].pChange === 0.00) ? 'text-sm text-gray-500' : 'text-sm text-red-600'}>
                                 {(response.data?.[0].change) === '-' ? <>0.00</> : response.data?.[0].change}

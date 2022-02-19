@@ -20,7 +20,13 @@ const Modal = ({ stocks, setStocks }) => {
         //setInput(`${data.get('symbol')}`)
         // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
         let stockSymbol = data.get('symbol').toUpperCase();
-        const res = await fetch(`/nse/get_quote_info?companyName=${data.get('symbol')}`)
+        let token = localStorage.getItem('token');
+        const res = await fetch(`/nse/get_quote_info?companyName=${data.get('symbol')}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
             if(res.ok===true) {
                 if((stocks.find(x => x.name === stockSymbol)===undefined)) {
                     setStocks([
@@ -106,14 +112,14 @@ const Modal = ({ stocks, setStocks }) => {
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-4 border-t border-solid border-blueGray-200 rounded-b">
                                         <button
-                                            className="bg-white focus:bg-gray-100 text-gray-500 focus:ring-4 focus:ring-gray-300 background-transparent rounded-lg border border-gray-200 uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            className="bg-white focus:bg-gray-100 text-gray-500 focus:ring-4 focus:ring-gray-300 background-transparent rounded border border-gray-200 uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="button"
                                             onClick={() => setShowModal(false)}
                                         >
                                             Close
                                         </button>
                                         <button
-                                            className="bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 text-white rounded-lg ml-2 uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                            className="bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 text-white ml-2 uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="submit"
                                             // onClick={() => setShowModal(false)}
                                         >

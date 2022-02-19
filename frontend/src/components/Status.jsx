@@ -6,9 +6,17 @@ const Status = () => {
     const [response, setResponse] = useState("");
 
     useEffect(() => {
-        fetch("/nse/get_market_status")
+        const token = localStorage.getItem('token');
+        fetch(`/nse/get_market_status`, {
+            method: 'GET',
+            headers: {
+                'Authorization': token
+            }
+        })
             .then(resp => resp.json())
-            .then(data => setResponse(data.status))
+            .then(data => {
+                setResponse(data.status)
+            })
     }, []);
 
     if(response === 'open') {

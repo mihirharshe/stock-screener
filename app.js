@@ -3,13 +3,21 @@ var express = require("express");
 var API = require('./index');
 var path = require('path');
 var cors = require('cors');
+const passport = require('passport');
+
 require("dotenv").config();
+
+
+const dbConfig = require('./config/database')
+const userRouter = require('./routes/users');
 
 var BSEAPI = API.BSE;
 var NSEAPI = API.NSE;
 const PORT = process.env.PORT || 5000;
 
 var app = express();
+
+dbConfig(); // Calling database configuration method to connect database
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,11 +28,16 @@ app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
 
+//Login Routes
+app.use('/', userRouter);
+
+const userAuth = passport.authenticate('jwt', { session: false })
+
 // National Stock Exchange (NSE) APIS
 
 // Get the stock market status (open/closed) - JSON
 // Example: http://localhost:3000/get_market_status
-app.get("/nse/get_market_status", (req, res, next) => {
+app.get("/nse/get_market_status", userAuth, (req, res, next) => {
   NSEAPI.getMarketStatus()
     .then(function (response) {
       res.json(response.data);
@@ -33,7 +46,7 @@ app.get("/nse/get_market_status", (req, res, next) => {
 
 // Get the NSE indexes information (last updated, name, previous close, open, low, high, last, percent change, year high and low, index order) - JSON
 // Example: http://localhost:3000/nse/get_indices
-app.get("/nse/get_indices", (req, res, next) => {
+app.get("/nse/get_indices", userAuth, (req, res, next) => {
   NSEAPI.getIndices()
     .then(function (response) {
       res.json(response.data);
@@ -42,7 +55,7 @@ app.get("/nse/get_indices", (req, res, next) => {
 
 // Get the quotes of all indexes in NSE - HTML
 // Example: http://localhost:3000/nse/get_quotes
-app.get("/nse/get_quotes", (req, res, next) => {
+app.get("/nse/get_quotes", userAuth, (req, res, next) => {
   NSEAPI.getQuotes()
     .then(function (response) {
       res.json(response.data);
@@ -51,7 +64,7 @@ app.get("/nse/get_quotes", (req, res, next) => {
 
 // Get the quotation data of the symbol (companyName) from NSE - JSON
 // Example: http://localhost:3000/nse/get_quote_info?companyName=TCS
-app.get("/nse/get_quote_info", (req, res, next) => {
+app.get("/nse/get_quote_info", userAuth, (req, res, next) => {
   NSEAPI.getQuoteInfo(req.query.companyName)
     .then(function (response) {
       if (response.data.data.length == 0) {
@@ -67,7 +80,7 @@ app.get("/nse/get_quote_info", (req, res, next) => {
 
 // Get the top 10 gainers of NSE - JSON
 // Example: http://localhost:3000/nse/get_gainers
-app.get("/nse/get_gainers", (req, res, next) => {
+app.get("/nse/get_gainers", userAuth, (req, res, next) => {
   NSEAPI.getGainers()
     .then(function (response) {
       res.json(response.data);
@@ -76,7 +89,7 @@ app.get("/nse/get_gainers", (req, res, next) => {
 
 // Get the top 10 losers of NSE - JSON
 // Example: http://localhost:3000/nse/get_losers
-app.get("/nse/get_losers", (req, res, next) => {
+app.get("/nse/get_losers", userAuth, (req, res, next) => {
   NSEAPI.getLosers()
     .then(function (response) {
       res.json(response.data);
@@ -217,7 +230,7 @@ app.get("/bse/get_index_stocks", (req, res, next) => {
 // Get details of company (stock) using securityCode - JSON
 // 500112 - symbol (securityCode) of SBIN stock BSE
 // Example: http://localhost:3000/bse/get_company_info?companyKey=500325
-app.get("/bse/get_company_info", (req, res, next) => {
+app.get("/bse/get_company_info", userAuth, (req, res, next) => {
   BSEAPI.getCompanyInfo(req.query.companyKey)
     .then(function (response) {
       res.json(response.data);
