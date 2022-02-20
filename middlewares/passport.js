@@ -23,3 +23,12 @@ passport.use(new Strategy(opts, function(jwt_payload, done) {
         }
     });
 }));
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+  
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+    console.log('hello',req.user)
+});

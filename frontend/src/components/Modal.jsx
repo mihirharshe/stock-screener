@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
-
+import axios from 'axios';
 /**
  * 
  * @todo : [input, setInput] state wasn't working properly. The state wasn't getting updated in input, need to look into that 
@@ -12,6 +13,10 @@ const Modal = ({ stocks, setStocks }) => {
     const [error, setError] = useState(false);
     const [exists, setExists] = useState(false);
 
+    useEffect(() => {
+
+    })
+
     const handleSubmit = async (e) => {
         setError(false);
         setExists(false);
@@ -20,37 +25,64 @@ const Modal = ({ stocks, setStocks }) => {
         //setInput(`${data.get('symbol')}`)
         // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
         let stockSymbol = data.get('symbol').toUpperCase();
-        let token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const res = await fetch(`/nse/get_quote_info?companyName=${data.get('symbol')}`, {
             method: 'GET',
             headers: {
                 'Authorization': token
             }
         })
-            if(res.ok===true) {
-                if((stocks.find(x => x.name === stockSymbol)===undefined)) {
-                    setStocks([
-                        ...stocks,
-                        {
-                            name: stockSymbol
-                        },
-                    ]);
-                    // Trying to persist data in localStorage
-                    // var singleStock = {
-                    //     name: stockSymbol,
-                    // };
-                    // localStocks.push(singleStock);
-                    // sessionStorage.setItem("localStocks", JSON.stringify(localStocks));
-                    // window.location.reload();
-                    setShowModal(false);
-                } else {
-                    setExists(true);
+
+        if (res.ok === true) {
+            // if ((stocks.find(x => x.name === stockSymbol) === undefined)) {
+            //     setStocks([
+            //         ...stocks,
+            //         {
+            //             name: stockSymbol
+            //         },
+            //     ]);
+            // Trying to persist data in localStorage
+            // var singleStock = {
+            //     name: stockSymbol,
+            // };
+            // localStocks.push(singleStock);
+            // sessionStorage.setItem("localStocks", JSON.stringify(localStocks));
+            // window.location.reload();
+
+
+            /* mongodb integration attempt  
+                [have to comment out the above part later]
+            */
+
+            const stockRes = await axios.get('/stock', {
+                headers: {
+                    'Authorization': token
                 }
-                setError(false);
+            })
+
+            const stockList = stockRes.data.stocks;
+
+            if ((stockList.find(x => x === stockSymbol)) === undefined) {
+                const res = axios.post('/stock', {
+                    headers: {
+                        'Authorization': token
+                    },
+                    data: JSON.stringify({
+                        'symbol': stockSymbol
+                    })
+                })
+                console.log('res', res);
+
+                setShowModal(false);
+
             } else {
-                setExists(false);
-                setError(true);
+                setExists(true);
             }
+            setError(false);
+        } else {
+            setExists(false);
+            setError(true);
+        }
 
         // setInput(e.target.value);
         // stocks.push({ name: `${data.get('symbol')}`})
@@ -97,10 +129,10 @@ const Modal = ({ stocks, setStocks }) => {
                                     {/*body*/}
                                     <div className="relative p-5 flex-auto">
                                         <label htmlFor="symbol-input" className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Symbol</label>
-                                        {(error || exists) ? 
-                                        <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-red-300 text-gray-900 sm:text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                                        : 
-                                        <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                        {(error || exists) ?
+                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-red-300 text-gray-900 sm:text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                            :
+                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                         }
                                         {error && (
                                             <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">NOT FOUND</span>
@@ -121,7 +153,7 @@ const Modal = ({ stocks, setStocks }) => {
                                         <button
                                             className="bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-400 text-white ml-2 uppercase text-sm px-5 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                             type="submit"
-                                            // onClick={() => setShowModal(false)}
+                                        // onClick={() => setShowModal(false)}
                                         >
                                             Add to watchlist
                                         </button>

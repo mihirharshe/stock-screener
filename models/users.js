@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const StockModel = require('./stocks');
+const { Schema } = mongoose;
 
-const userSchema = mongoose.Schema({
+const userSchema = Schema({
     username: {
         type: String,
         required: true,
@@ -11,10 +12,8 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    name: {
-        type: String,
-        ref: StockModel
-    }
+    stockList: [String]
+    
 }, { timestamps: true });
 
 const UserModel = mongoose.model('User', userSchema);

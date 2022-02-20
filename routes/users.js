@@ -33,5 +33,13 @@ router.get('/user', async (req, res) => {
     await auth.userCheck(req, res);
 });
 
+router.get('/stock', async (req, res) => {
+    await auth.getStocks(req, res);
+})
+
+router.post('/stock', async (req, res) => {
+    await auth.addStocks(req, res);
+})
+
 
 module.exports = router;

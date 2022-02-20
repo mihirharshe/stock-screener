@@ -7,24 +7,27 @@ import Status from './Status';
 
 const StockTable = ({ logout }) => {
 
-    const [stocks, setStocks] = useState([]);
+    const [stockList, setStockList] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         const fetchData = async () => {
             try {
-                await axios.get('http://localhost:5000/watchlist',
+                const stocks = await axios.get('/stock',
                     {
                         headers: {
                             Authorization: token
                         }
                     })
+                console.log('stocks',stocks);
+                setStockList(stocks.data.stocks);
             } catch (err) {
                 // navigate('/login')
                 console.error(err);
             }
         }
         fetchData();
+        console.log('in use effect',stockList);
     }, [])
     // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
     return (
@@ -35,7 +38,7 @@ const StockTable = ({ logout }) => {
 
             <div className="spacing">
                 <div className="flex justify-end">
-                    <Modal stocks={stocks} setStocks={setStocks} />
+                    <Modal />
                 </div>
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -68,8 +71,8 @@ const StockTable = ({ logout }) => {
                                         {/* {stocks.map((item) => (
                                             <StockRow key={item.name} symbol={item.name} />
                                         ))} */}
-                                        {stocks.map((item) => (
-                                            <StockRow key={item.name} symbol={item.name} />
+                                        {stockList.map((item) => (
+                                            <StockRow symbol={item} />
                                         ))}
                                     </tbody>
                                 </table>

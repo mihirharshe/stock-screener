@@ -1,8 +1,10 @@
-const UserModel = require('../models/users')
+const UserModel = require('../models/users');
+const StockModel = require('../models/stocks');
 const { validateUsername } = require('../utils/validate');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 const { verifyJwt } = require('../utils/validate')
+const SECRET = process.env.SECRET
 
 const userRegister = async (userDetails, res) => {
     try {
@@ -78,6 +80,65 @@ const userLogin = async (userDetails, res) => {
     }
 }
 
+const getStocks = async (req, res) => {
+    const token = (req.headers['authorization'])?.substring(7);
+    try {
+        if(!token) {
+            return res.status(401).json({
+                success: false,
+                message: `Unauthorized`
+            })
+        }
+        const decoded = jwt.verify(token, SECRET);
+        const user = await UserModel.findById(decoded.id);
+        if(!user) { 
+            return res.status(401).json({
+                success: false,
+                message: `Invalid token`
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            stocks: user.stockList
+        })
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            error : err
+        })
+    }
+}
+
+const addStocks = async (req, res) => {
+    console.log(req.headers)
+    const token = (req.headers[`authorization`])?.substring(7);
+    try {
+        console.log('tokeN', token)
+        if(!token) {
+            return res.status(401).json({
+                success: false,
+                message: `Unauthorized`
+            })
+        }
+        const decoded = jwt.verify(token, SECRET);
+        await UserModel.updateOne(
+            { _id: decoded.id },
+            { $push: { stockList: req.body.symbol }}
+        )
+
+        return res.status(201).json({
+            success: true,
+            message: `Symbol successfully added`,
+        })
+    } catch(err) {
+        return res.status(500).json({
+            success: false,
+            error: err
+        })
+    }
+}
+
 // const userCheck = async (_req, res) => {
 //     let currentUser;
 //     try {
@@ -120,8 +181,11 @@ const userCheck = async (user) => {
 }
 
 
+
 module.exports = {
     userRegister,
     userLogin,
-    userCheck
+    userCheck,
+    getStocks,
+    addStocks
 }
