@@ -3,17 +3,20 @@ import { css } from "@emotion/react";
 import ChartModal from "./ChartModal"
 import HashLoader from "react-spinners/HashLoader";
 import { BiLineChart } from 'react-icons/bi'
-// import { HiOutlineTrash } from 'react-icons/hi'
-// import { IconContext } from "react-icons";
+import { HiOutlineTrash } from 'react-icons/hi'
+import { IconContext } from "react-icons";
 
-const StockRow = ({ symbol }) => {
+const StockRow = ({ symbol, handleDelete, allowDelete }) => {
+
+    symbol = symbol.toUpperCase();
+    symbol = encodeURIComponent(symbol);
 
     const [showChartModal, setShowChartModal] = useState(false);
     const [response, setResponse] = useState({});
+    const token = localStorage.getItem('token');
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem('token');
             const res = await fetch(`/nse/get_quote_info?companyName=${symbol}`, {
                 method: 'GET',
                 headers: {
@@ -26,6 +29,48 @@ const StockRow = ({ symbol }) => {
             console.error(err);
         }
     }
+
+    // const handleDelete = async () => {
+    //     try {
+
+    //         const res = await fetch(`/stock/${symbol}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Authorization': token
+    //             }
+    //         })
+    //         console.log(await res.json());
+    //         const newStock = stockList.filter((el) => el !== symbol)
+    //         console.log(newStock);
+    //         setStockList(newStock)
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    //     //or
+
+    //     // const stockPos = stockList.indexOf(symbol.toUpperCase());
+    //     // console.log('pos',stockPos)
+    //     // stockList = stockList.splice(stockPos,1)
+    //     // console.log(stockList)
+    //     // setStockList(stockList)
+    // }
+
+    // const fetchList = async () => {
+    //     try {
+    //         const res = await fetch('/stock', {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Authorization': token
+    //             }
+    //         })
+    //         const response = await res.json();
+    //         setStockList(response.stocks)
+    //         console.log(stockList)
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+
 
     // Fetches data on first render
     useEffect(() => {
@@ -54,18 +99,18 @@ const StockRow = ({ symbol }) => {
                         <td className="px-2 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                                 <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900">
+                                    <div className="text-sm font-semibold text-gray-900">
                                         {(response.data?.[0].symbol).replaceAll('&amp;', '&')}
 
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-sm text-gray-500 font-normal">
                                         {response.data?.[0].companyName}
                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-gray-900 font-medium">
                                 {response.data?.[0].lastPrice}
                             </div>
                         </td>
@@ -75,18 +120,18 @@ const StockRow = ({ symbol }) => {
                                 If pChange < 0 then color red
                                 If pChange = 0 then neutral color */}
 
-                            <div className={(response.data?.[0].pChange > 0) ? 'text-sm text-green-600' :
-                                (response.data?.[0].pChange === 0.00) ? 'text-sm text-gray-500' : 'text-sm text-red-600'}>
+                            <div className={(response.data?.[0].pChange > 0) ? 'text-sm text-green-600 font-medium' :
+                                (response.data?.[0].pChange === 0.00) ? 'text-sm text-gray-500 font-medium' : 'text-sm text-red-600 font-medium'}>
                                 {(response.data?.[0].change) === '-' ? <>0.00</> : response.data?.[0].change}
-                                <span className='text-xs ml-1'>({response.data?.[0].pChange}%)</span>
+                                <span className='text-xs ml-1 font-medium'>({response.data?.[0].pChange}%)</span>
                             </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">
+                            <div className="text-sm text-gray-900 font-medium">
                                 {response.lastUpdateTime?.substring(0, 11)}
                             </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium tracking-tighter">
                             {response.lastUpdateTime?.substring(12)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -98,11 +143,14 @@ const StockRow = ({ symbol }) => {
                                 <BiLineChart /> <span className="text-sm ml-1">Chart</span>
                             </button>
                         </td>
-                        {/* <td>
-                            <IconContext.Provider value={{ color: "rgb(235, 46, 46)", size: "1.25em"}}>
-                                <HiOutlineTrash onClick={()=> removeStock()}/>
-                            </IconContext.Provider>
-                        </td> */}
+                        { allowDelete ?
+                            <td>
+                                <IconContext.Provider value={{ color: "rgb(235, 46, 46)", size: "1.25em" }}>
+                                    <HiOutlineTrash className="cursor-pointer" onClick={() => handleDelete(symbol)} />
+                                </IconContext.Provider>
+                            </td>
+                            : null
+                        }
                     </tr>
                     {showChartModal ?
                         <ChartModal

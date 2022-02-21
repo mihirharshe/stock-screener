@@ -6,6 +6,8 @@
     "@craco/craco": "^6.4.0",
     "@emotion/babel-plugin": "^11.3.0",
     "@emotion/react": "^11.7.0",
+    "@fontsource/open-sans": "^4.5.5",
+    "@fontsource/plus-jakarta-sans": "^4.5.2",
     "@headlessui/react": "^1.4.2",
     "@heroicons/react": "^1.0.5",
     "@testing-library/jest-dom": "^5.15.0",

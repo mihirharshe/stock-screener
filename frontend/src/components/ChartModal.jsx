@@ -5,46 +5,6 @@ import { AdvancedChart } from "react-tradingview-embed";
  */
 
 const ChartModal = ({ setShowChartModal, symbol }) => {
-    // const [showModal, setShowModal] = useState(false);
-    //const [input, setInput] = useState('');
-    // const [error, setError] = useState(false);
-    // const [exists, setExists] = useState(false);
-
-    // const handleSubmit = async (e) => {
-    //     setError(false);
-    //     setExists(false);
-    //     e.preventDefault();
-    //     const data = new FormData(e.target);
-    //     //setInput(`${data.get('symbol')}`)
-    //     let stockSymbol = data.get('symbol').toUpperCase();
-    //     const res = await fetch(`http://localhost:5000/nse/get_quote_info?companyName=${data.get('symbol')}`)
-    //         if(res.ok===true) {
-    //             if((stocks.find(x => x.name === stockSymbol)===undefined)) {
-    //                 setStocks([
-    //                     ...stocks,
-    //                     {
-    //                         name: stockSymbol
-    //                     }
-    //                 ]);
-    //                 setShowModal(false);
-    //             } else {
-    //                 setExists(true);
-    //             }
-    //             setError(false);
-    //         } else {
-    //             setExists(false);
-    //             setError(true);
-    //         }
-
-    //     // setInput(e.target.value);
-    //     // stocks.push({ name: `${data.get('symbol')}`})
-    // }
-    // const newModalClick = async (e) => {
-    //     e.preventDefault();
-    //     setShowModal(true);
-    //     setError(false);
-    //     setExists(false);
-    // }
 
     return (
         <>

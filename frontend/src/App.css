@@ -43,18 +43,40 @@
   min-height: 100vh;
 }
 
-.spacing {
+body { 
+    font-family: "Plus Jakarta Sans"; 
+    font-weight: 500
+}
+
+.loginText {
+    color: #8870DE;
+}
+
+.loginBtn {
+    background-color: #7e6bc4;
+    color: white;
+}
+
+.loginBtn:hover {
+    background-color: #6754aa;
+}
+
+.content {
   padding: 0 5em 5em 5em;
 }
 
+.customStyles {
+    height: 40vh
+}
+
 @media only screen and (max-width: 1000px) {
-  .spacing {
+  .content {
     padding: 0 2.5em 2.5em 2.5em;
   }   
 }
 
 @media only screen and (max-width: 600px) {
-  .spacing {
-    padding: 0;
+  .content {
+    padding: 0 1em;
   }   
 }

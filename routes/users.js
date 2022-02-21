@@ -41,5 +41,9 @@ router.post('/stock', async (req, res) => {
     await auth.addStocks(req, res);
 })
 
+router.put('/stock/:symbol', async (req, res) => {
+    await auth.deleteStocks(req, res);
+})
+
 
 module.exports = router;

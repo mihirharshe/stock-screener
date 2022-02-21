@@ -80,10 +80,22 @@ const userLogin = async (userDetails, res) => {
     }
 }
 
+const userCheck = async (user) => {
+    try {
+        let foundUser = await UserModel.findOne({
+            username: user.username
+        });
+        // console.log('foundUser', foundUser);
+        return foundUser ? true : false
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 const getStocks = async (req, res) => {
     const token = (req.headers['authorization'])?.substring(7);
     try {
-        if(!token) {
+        if (!token) {
             return res.status(401).json({
                 success: false,
                 message: `Unauthorized`
@@ -91,7 +103,7 @@ const getStocks = async (req, res) => {
         }
         const decoded = jwt.verify(token, SECRET);
         const user = await UserModel.findById(decoded.id);
-        if(!user) { 
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 message: `Invalid token`
@@ -105,17 +117,15 @@ const getStocks = async (req, res) => {
         console.error(err);
         return res.status(500).json({
             success: false,
-            error : err
+            error: err
         })
     }
 }
 
 const addStocks = async (req, res) => {
-    console.log(req.headers)
     const token = (req.headers[`authorization`])?.substring(7);
     try {
-        console.log('tokeN', token)
-        if(!token) {
+        if (!token) {
             return res.status(401).json({
                 success: false,
                 message: `Unauthorized`
@@ -124,14 +134,14 @@ const addStocks = async (req, res) => {
         const decoded = jwt.verify(token, SECRET);
         await UserModel.updateOne(
             { _id: decoded.id },
-            { $push: { stockList: req.body.symbol }}
+            { $push: { stockList: req.body.symbol } }
         )
 
         return res.status(201).json({
             success: true,
             message: `Symbol successfully added`,
         })
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({
             success: false,
             error: err
@@ -139,44 +149,42 @@ const addStocks = async (req, res) => {
     }
 }
 
-// const userCheck = async (_req, res) => {
-//     let currentUser;
-//     try {
-//         console.log('first')
-//         let token = localStorage.getItem('token');
-//         console.log('second')
-//         if(token) {
-//             let trimmedToken = token.substring(7)
-//             let decodedUser = verifyJwt(trimmedToken);
-//             currentUser = decodedUser.id;
-//         }
-//         else {
-//             currentUser = null;
-//         }
-//         return res.status(200).json({
-//             success: true,
-//             currentUser: currentUser
-//         })
-//     }
-//     catch (err) {
-//         console.error(err);
-//         return res.status(500).json({
-//             success: false,
-//             error: err
-//         })
-//     }
-// }
-
-
-const userCheck = async (user) => {
+const deleteStocks = async (req, res) => {
+    const token = (req.headers['authorization'])?.split(" ")[1]
+    const symbol = (req.params.symbol)?.toUpperCase();
+    // console.log(token);
+    // console.log('symbol',symbol)
     try {
-        let foundUser = await UserModel.findOne({
-            username: user.username
-        });
-        // console.log('foundUser', foundUser);
-        return foundUser ? true : false
+        if(!token) {
+            return res.status(401).json({
+                success: false,
+                message: `Unauthorized`
+            })
+        }
+        const decoded = jwt.verify(token, SECRET);
+        const user = await UserModel.findById(decoded.id);
+        if(!user.stockList.includes(symbol)) {
+            return res.status(404).json({
+                success: false,
+                message: `Symbol not found`
+            })
+        }
+        await UserModel.updateOne(
+            { _id: decoded.id },
+            { $pull: { stockList: { $in: [`${symbol}`] } }}
+        );
+        
+        return res.status(200).json({
+            success: true,
+            message: `Symbol successfully deleted`
+        })
+
     } catch(err) {
         console.error(err);
+        return res.status(500).json({
+            success: false,
+            error: err
+        })
     }
 }
 
@@ -187,5 +195,6 @@ module.exports = {
     userLogin,
     userCheck,
     getStocks,
-    addStocks
+    addStocks,
+    deleteStocks
 }

@@ -5,15 +5,15 @@ import { NavLink } from 'react-router-dom';
 import Clock from 'react-live-clock'
 
 const navigation = [
-  { name: 'Watchlist', href: '/watchlist', current: true },
-  { name: 'Top Gainers', href: '/gainers', current: false },
-  { name: 'Top Losers', href: '/losers', current: false },
+  { name: 'watchlist', href: '/watchlist', current: true },
+  { name: 'top gainers', href: '/gainers', current: false },
+  { name: 'top losers', href: '/losers', current: false },
 ]
 
 const Header = ({ logout }) => {
 
-  let inactiveStyle = 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
-  let activeStyle = 'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium'
+  let inactiveStyle = 'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium tracking-wider'
+  let activeStyle = 'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium tracking-wider'
 
   return (
       <Disclosure as="nav" className="bg-gray-800">
@@ -41,8 +41,9 @@ const Header = ({ logout }) => {
                     /> */}
                     <img
                       className="hidden lg:block h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                      alt="Workflow"
+                    //   src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                      src="tickerbigcolorfinal.png"
+                      alt="theticker"
                     />
                   </div>
                   <div className="hidden sm:block sm:ml-6">
@@ -64,7 +65,7 @@ const Header = ({ logout }) => {
                   <div className="sm:flex items-center justify-self-end space-x-4 sm:ml-auto">
                     <Clock format="HH:mm:ss" interval={1000} ticking={true} style={{color: '#fff'}} />
                   </div>
-                  <button onClick={logout} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium ml-3 absolute inset-y-0 right-0 flex items-center sm:static sm:block">Logout</button>
+                  <button onClick={logout} className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium tracking-wider ml-3 absolute inset-y-0 right-0 flex items-center sm:static sm:block">logout</button>
                 </div>
               </div>
             </div>

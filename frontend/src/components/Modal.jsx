@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
+import { AiOutlineAreaChart } from 'react-icons/ai'
 /**
  * 
  * @todo : [input, setInput] state wasn't working properly. The state wasn't getting updated in input, need to look into that 
  *          Instead for now, stored the symbol directly in a variable and then used it.
  */
 
-const Modal = ({ stocks, setStocks }) => {
+const Modal = ({ stockList, setStockList }) => {
     const [showModal, setShowModal] = useState(false);
     //const [input, setInput] = useState('');
     const [error, setError] = useState(false);
@@ -24,9 +25,11 @@ const Modal = ({ stocks, setStocks }) => {
         const data = new FormData(e.target);
         //setInput(`${data.get('symbol')}`)
         // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
-        let stockSymbol = data.get('symbol').toUpperCase();
+        const symbol = encodeURIComponent(data.get('symbol').toUpperCase());
+        console.log('decoded', decodeURIComponent(symbol));
+        console.log('encoded', encodeURIComponent(symbol));
         const token = localStorage.getItem('token');
-        const res = await fetch(`/nse/get_quote_info?companyName=${data.get('symbol')}`, {
+        const res = await fetch(`/nse/get_quote_info?companyName=${symbol}`, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -54,24 +57,48 @@ const Modal = ({ stocks, setStocks }) => {
                 [have to comment out the above part later]
             */
 
-            const stockRes = await axios.get('/stock', {
-                headers: {
-                    'Authorization': token
-                }
-            })
+            // const stockRes = await axios.get('/stock', {
+            //     headers: {
+            //         'Authorization': token
+            //     }
+            // })
 
-            const stockList = stockRes.data.stocks;
 
-            if ((stockList.find(x => x === stockSymbol)) === undefined) {
-                const res = axios.post('/stock', {
-                    headers: {
-                        'Authorization': token
-                    },
-                    data: JSON.stringify({
-                        'symbol': stockSymbol
+            // const stockList = stockRes.data.stocks;
+
+            if ((stockList.find(x => x === symbol)) === undefined) {
+                // const res = await axios.post('/stock',
+                //     {
+                //         symbol: `${stockSymbol}`
+                //     },
+                //     {
+                //         headers: {
+                //             'Authorization': token,
+                //         }
+                //     })
+                // console.log('res', res);
+                // // const res = await fetch('/stock', {
+                // //     method: 'POST',
+                // //     headers: {
+                // //         'Content-Type': 'application/json',
+                // //         'Authorization': token,
+                // //     },
+                // //     body: JSON.stringify({ symbol: stockSymbol })
+                // // })
+                // // const resContent = await res.json();
+                // // console.log(resContent);
+
+                await axios.post('http://localhost:5000/stock',
+                    { symbol },
+                    {
+                        headers: {
+                            'Authorization': token
+                        }
                     })
-                })
-                console.log('res', res);
+                setStockList([
+                    ...stockList,
+                    symbol
+                ])
 
                 setShowModal(false);
 
@@ -96,13 +123,27 @@ const Modal = ({ stocks, setStocks }) => {
 
     return (
         <>
-            <button
-                className="ml-4 mb-4 inline-flex text-white bg-gray-600 border-0 px-2 focus:outline-none rounded text-lg focus:ring-4 focus:ring-gray-300 ease-linear transition-all duration-150"
-                type="button"
-                onClick={newModalClick}
-            >
-                +
-            </button>
+            {stockList.length !== 0 ?
+                <button
+                    className="mb-4 inline-flex text-white text-base bg-gray-600 border-0 px-2 focus:outline-none rounded focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
+                    type="button"
+                    onClick={newModalClick}
+                >
+                    <AiOutlineAreaChart /><span className="text-sm"> add </span>
+                </button>
+                :
+                <div className="text-4xl font-bold flex flex-col gap-5 justify-center items-center customStyles">
+                    Add some stocks to get started
+                    <button
+                        className="tracking-wide py-1 rounded-md inline-flex items-center px-2 justify-center text-white text-lg bg-gray-600 border border-transparent focus:outline-none focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
+                        type="button"
+                        onClick={newModalClick}
+                    >
+                        <AiOutlineAreaChart /><span className="text-sm"> add </span>
+                    </button>
+                </div>
+            }
+
             {showModal ? (
                 <>
                     <form onSubmit={handleSubmit}>
@@ -135,10 +176,10 @@ const Modal = ({ stocks, setStocks }) => {
                                             <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                         }
                                         {error && (
-                                            <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">NOT FOUND</span>
+                                            <span className="flex items-center font-semibold tracking-wide text-red-500 text-xs mt-1 ml-1">NOT FOUND</span>
                                         )}
                                         {exists ? (
-                                            <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">ALREADY EXISTS</span>
+                                            <span className="flex items-center font-semibold tracking-wide text-red-500 text-xs mt-1 ml-1">ALREADY EXISTS</span>
                                         ) : null}
                                     </div>
                                     {/*footer*/}
