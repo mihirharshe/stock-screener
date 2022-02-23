@@ -1,7 +1,6 @@
 const UserModel = require("../models/users");
 const { Strategy, ExtractJwt } = require("passport-jwt");
 const passport = require('passport');
-const { userCheck } = require('../controllers/register');
 
 const opts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -30,5 +29,4 @@ passport.serializeUser(function(user, done) {
   
 passport.deserializeUser(function(user, done) {
     done(null, user);
-    console.log('hello',req.user)
 });

@@ -21,7 +21,7 @@ const Register = () => {
 
     const submit = async () => {
         try {
-            let user = await axios.post('http://localhost:5000/register', { username, password })
+            let user = await axios.post('/api/auth/register', { username, password })
             setStatusCode(201);
             setMessage(user.data.message);
             setTimeout(() => navigate('/login'), 2000);

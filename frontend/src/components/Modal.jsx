@@ -88,7 +88,7 @@ const Modal = ({ stockList, setStockList }) => {
                 // // const resContent = await res.json();
                 // // console.log(resContent);
 
-                await axios.post('http://localhost:5000/stock',
+                await axios.post('/api/v1/stock',
                     { symbol },
                     {
                         headers: {

@@ -18,7 +18,7 @@ const Login = ({ authenticate }) => {
 
     const submit = async () => {
         try {
-            let user = await axios.post('http://localhost:5000/login', { username, password })
+            let user = await axios.post('/api/auth/login', { username, password })
             localStorage.setItem('token', user.data.token)
             setStatusCode(200);
             const loginLoad = () => {

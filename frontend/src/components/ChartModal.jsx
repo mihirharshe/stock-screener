@@ -6,6 +6,11 @@ import { AdvancedChart } from "react-tradingview-embed";
 
 const ChartModal = ({ setShowChartModal, symbol }) => {
 
+    symbol = decodeURIComponent(symbol);
+    if(symbol.includes('&')) {
+        symbol = symbol.replace('&','_');
+    }
+
     return (
         <>
             <div

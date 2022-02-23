@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const StockModel = require('./stocks');
 const { Schema } = mongoose;
 
 const userSchema = Schema({

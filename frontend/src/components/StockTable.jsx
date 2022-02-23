@@ -14,7 +14,7 @@ const StockTable = ({ logout }) => {
         try {
             const token = localStorage.getItem('token');
 
-            const res = await fetch(`/stock/${symbol}`, {
+            const res = await fetch(`/api/v1/stock/${symbol}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token
@@ -40,7 +40,7 @@ const StockTable = ({ logout }) => {
         const token = localStorage.getItem('token');
         const fetchData = async () => {
             try {
-                const stocksDB = await axios.get('/stock',
+                const stocksDB = await axios.get('/api/v1/stock',
                     {
                         headers: {
                             Authorization: token

@@ -155,7 +155,7 @@ const StockRow = ({ symbol, handleDelete, allowDelete }) => {
                     {showChartModal ?
                         <ChartModal
                             setShowChartModal={setShowChartModal}
-                            symbol={symbol}
+                            symbol={decodeURIComponent(symbol)}
                         />
                         : null
                     }
