@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
 import { useState } from 'react';
+import { css } from "@emotion/react";
 import axios from 'axios';
+import ScaleLoader from "react-spinners/ScaleLoader";
 import { AiOutlineAreaChart } from 'react-icons/ai'
 /**
  * 
@@ -13,23 +14,21 @@ const Modal = ({ stockList, setStockList }) => {
     //const [input, setInput] = useState('');
     const [error, setError] = useState(false);
     const [exists, setExists] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
-    useEffect(() => {
-
-    })
+    const baseUrl = '/api/v2/nse'
 
     const handleSubmit = async (e) => {
         setError(false);
         setExists(false);
+        setLoading(true);
         e.preventDefault();
         const data = new FormData(e.target);
         //setInput(`${data.get('symbol')}`)
         // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
         const symbol = encodeURIComponent(data.get('symbol').toUpperCase());
-        console.log('decoded', decodeURIComponent(symbol));
-        console.log('encoded', encodeURIComponent(symbol));
         const token = localStorage.getItem('token');
-        const res = await fetch(`/nse/get_quote_info?companyName=${symbol}`, {
+        const res = await fetch(`${baseUrl}/equity/${symbol}`, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -37,57 +36,7 @@ const Modal = ({ stockList, setStockList }) => {
         })
 
         if (res.ok === true) {
-            // if ((stocks.find(x => x.name === stockSymbol) === undefined)) {
-            //     setStocks([
-            //         ...stocks,
-            //         {
-            //             name: stockSymbol
-            //         },
-            //     ]);
-            // Trying to persist data in localStorage
-            // var singleStock = {
-            //     name: stockSymbol,
-            // };
-            // localStocks.push(singleStock);
-            // sessionStorage.setItem("localStocks", JSON.stringify(localStocks));
-            // window.location.reload();
-
-
-            /* mongodb integration attempt  
-                [have to comment out the above part later]
-            */
-
-            // const stockRes = await axios.get('/stock', {
-            //     headers: {
-            //         'Authorization': token
-            //     }
-            // })
-
-
-            // const stockList = stockRes.data.stocks;
-
             if ((stockList.find(x => x === symbol)) === undefined) {
-                // const res = await axios.post('/stock',
-                //     {
-                //         symbol: `${stockSymbol}`
-                //     },
-                //     {
-                //         headers: {
-                //             'Authorization': token,
-                //         }
-                //     })
-                // console.log('res', res);
-                // // const res = await fetch('/stock', {
-                // //     method: 'POST',
-                // //     headers: {
-                // //         'Content-Type': 'application/json',
-                // //         'Authorization': token,
-                // //     },
-                // //     body: JSON.stringify({ symbol: stockSymbol })
-                // // })
-                // // const resContent = await res.json();
-                // // console.log(resContent);
-
                 await axios.post('/api/v1/stock',
                     { symbol },
                     {
@@ -99,37 +48,42 @@ const Modal = ({ stockList, setStockList }) => {
                     ...stockList,
                     symbol
                 ])
-
                 setShowModal(false);
 
             } else {
                 setExists(true);
+                setLoading(false);
             }
             setError(false);
+            setLoading(false);
         } else {
             setExists(false);
             setError(true);
+            setLoading(false);
         }
-
-        // setInput(e.target.value);
-        // stocks.push({ name: `${data.get('symbol')}`})
     }
     const newModalClick = async (e) => {
         e.preventDefault();
         setShowModal(true);
+        setLoading(false);
         setError(false);
         setExists(false);
     }
+
+    const override = css`
+    display: block;
+    margin: 0.5rem 0 0 0.25rem;
+    `;
 
     return (
         <>
             {stockList.length !== 0 ?
                 <button
-                    className="mb-4 inline-flex text-white text-base bg-gray-600 border-0 px-2 focus:outline-none rounded focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
+                    className="mb-4 inline-flex text-white text-base bg-gray-600 border-0 p-1 focus:outline-none rounded focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
                     type="button"
                     onClick={newModalClick}
                 >
-                    <AiOutlineAreaChart /><span className="text-sm"> add </span>
+                    <AiOutlineAreaChart className="self-center"/><span className="text-sm"> add </span>
                 </button>
                 :
                 <div className="text-4xl font-bold flex flex-col gap-5 justify-center items-center customStyles">
@@ -181,6 +135,9 @@ const Modal = ({ stockList, setStockList }) => {
                                         {exists ? (
                                             <span className="flex items-center font-semibold tracking-wide text-red-500 text-xs mt-1 ml-1">ALREADY EXISTS</span>
                                         ) : null}
+                                        {isLoading ? (
+                                            <ScaleLoader color={'#6366f1'} css={override} loading={true} height={20} width={3} radius={10} />
+                                        ): null}
                                     </div>
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-4 border-t border-solid border-blueGray-200 rounded-b">

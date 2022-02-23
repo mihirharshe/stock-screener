@@ -11,6 +11,7 @@ require("dotenv").config();
 const dbConfig = require('./config/database')
 const userRouter = require('./routes/users');
 const stockRouter = require('./routes/stocks');
+const nseRouter = require('./routes/nse');
 
 var BSEAPI = API.BSE;
 var NSEAPI = API.NSE;
@@ -34,6 +35,9 @@ app.use('/api/auth', userRouter);
 
 //Stock Routes
 app.use('/api/v1', stockRouter);
+
+//NSE Routes
+app.use('/api/v2/nse', nseRouter);
 
 const userAuth = passport.authenticate('jwt', { session: false })
 

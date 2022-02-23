@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 const Status = () => {
 
     const [response, setResponse] = useState("");
+    
+    const baseUrl = '/api/v2/nse/status'
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        fetch(`/nse/get_market_status`, {
+        fetch(`${baseUrl}`, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -15,7 +17,7 @@ const Status = () => {
         })
             .then(resp => resp.json())
             .then(data => {
-                setResponse(data.status)
+                setResponse(data.marketState[0].marketStatus)
             })
     }, []);
 

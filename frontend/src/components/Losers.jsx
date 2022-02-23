@@ -9,7 +9,7 @@ const Losers = ({ logout }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        fetch(`/nse/get_losers`, {
+        fetch(`/api/v2/nse/losers/NIFTY%2050`, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -55,7 +55,7 @@ const Losers = ({ logout }) => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {response.data?.map((item) => (
+                                        {response.losers?.map((item) => (
                                             <StockRow
                                                 key={item.symbol}
                                                 symbol={encodeURIComponent(item.symbol)}

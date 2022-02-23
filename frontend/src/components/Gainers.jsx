@@ -9,7 +9,19 @@ const Gainers = ({ logout }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        fetch(`/nse/get_gainers`, {
+        // fetch(`/nse/get_gainers`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Authorization': token
+        //     }
+
+        // })
+        //     .then(resp => resp.json())
+        //     .then(data => {
+        //         console.log(data)
+        //         setResponse(data)
+        //     })
+        fetch(`/api/v2/nse/gainers/NIFTY%2050`, {
             method: 'GET',
             headers: {
                 'Authorization': token
@@ -18,7 +30,6 @@ const Gainers = ({ logout }) => {
         })
             .then(resp => resp.json())
             .then(data => {
-                console.log(data)
                 setResponse(data)
             })
     }, [])
@@ -56,7 +67,7 @@ const Gainers = ({ logout }) => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {response.data?.map((item) => (
+                                        {response.gainers?.map((item) => (
                                             <StockRow
                                                 key={item.symbol}
                                                 symbol={encodeURIComponent(item.symbol)}
