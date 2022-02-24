@@ -21,7 +21,7 @@ const Status = () => {
             })
     }, []);
 
-    if(response === 'open') {
+    if(response === 'Open') {
         return (
             <div className={styles.statusOpen}>
                 Market Status: {response}
