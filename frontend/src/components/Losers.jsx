@@ -1,9 +1,32 @@
 import { useState, useEffect } from 'react';
 import StockRow from './StockRow';
+import ReactPaginate from 'react-paginate';
 
 const Losers = () => {
 
     const [response, setResponse] = useState({});
+    const [pageNumber, setPageNumber] = useState(0);
+
+    const itemsPerPage = 10
+    const itemsVisited = pageNumber * itemsPerPage
+
+    const displayItems = response.losers
+        ?.slice(itemsVisited, itemsVisited + itemsPerPage)
+        .map((item) => {
+            return (
+                <StockRow
+                    key={item.symbol}
+                    symbol={encodeURIComponent(item.symbol)}
+                    allowDelete={false}
+                />
+            )
+        })
+
+    const pageCount = Math.ceil(response.losers?.length / itemsPerPage)
+
+    const handlePageChange = ({ selected }) => {
+        setPageNumber(selected);
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -51,12 +74,7 @@ const Losers = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {response.losers?.map((item) => (
-                                            <StockRow
-                                                key={item.symbol}
-                                                symbol={encodeURIComponent(item.symbol)}
-                                                allowDelete={false} />
-                                        ))}
+                                        {displayItems}
                                     </tbody>
                                 </table>
                             </div>
@@ -64,6 +82,17 @@ const Losers = () => {
                     </div>
                 </div>
             </div>
+            <ReactPaginate
+                previousLabel={"<"}
+                nextLabel={">"}
+                pageCount={pageCount}
+                onPageChange={handlePageChange}
+                containerClassName={"paginationBtns"}
+                previousClassName={"previousBtn"}
+                nextLinkClassName={"nextBtn"}
+                disabledClassName={"disabledBtn"}
+                activeClassName={"activeBtn"}
+            />
         </>
     );
 }

@@ -69,6 +69,51 @@ body {
     height: 40vh
 }
 
+/* Pagination styles */
+.paginationBtns {
+    display: flex;
+    width: 80%;
+    margin: 0 auto;
+    padding-bottom: 2em;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.paginationBtns li {
+    padding: 5px 15px;
+    color: rgb(92, 92, 92);
+    border: 1px solid rgb(199, 199, 199);
+    background-color: white;
+    cursor: pointer;
+    border-right-width: 0;
+}
+
+.paginationBtns a:hover {
+    color:rgb(138, 138, 138);
+}
+
+.paginationBtns > .activeBtn {
+    border: 1px solid #4f2ad3 !important;
+    background-color: #eeeafd;
+}
+
+.activeBtn + li {
+    border-left-width: 0;
+}
+
+.previousBtn {
+    border-radius: 5px 0 0 5px;
+}
+
+.paginationBtns > .next {
+    border-radius: 0 5px 5px 0;
+    border-right-width: 1px;
+}
+
+.activeBtn a {
+    color: #4f2ad3;
+}
+
 @media only screen and (max-width: 1000px) {
   .content {
     padding: 0 2.5em 2.5em 2.5em;
