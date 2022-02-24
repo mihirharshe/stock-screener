@@ -75,7 +75,7 @@ const Header = ({ logout }) => {
                 {navigation.map((item) => (
                   <Disclosure.Button
                     key={item.name}
-                    as="NavLink"
+                    as={NavLink}
                     to={item.href}
                     className={({ isActive }) =>
                       isActive ? activeStyle : inactiveStyle
