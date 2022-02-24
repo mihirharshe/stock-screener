@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import axios from 'axios';
 import StockRow from './StockRow'
 import Modal from './Modal';
+import ReactPaginate from 'react-paginate';
 
 
 const StockTable = () => {
 
     const [stockList, setStockList] = useState([]);
+    const [pageNumber, setPageNumber] = useState(0);
 
     const handleDelete = async (symbol) => {
         try {
@@ -26,6 +28,30 @@ const StockTable = () => {
             console.error(err);
         }
     }
+
+    const itemsPerPage = 10
+    const itemsVisited = pageNumber * itemsPerPage
+
+    const displayItems = stockList
+        ?.slice(itemsVisited, itemsVisited + itemsPerPage)
+        .map((item) => {
+            return (
+                <StockRow
+                    key={item}
+                    symbol={item}
+                    handleDelete={handleDelete}
+                    allowDelete={true}
+                />
+            )
+        })
+
+    const pageCount = Math.ceil(stockList?.length / itemsPerPage)
+
+    const handlePageChange = ({ selected }) => {
+        setPageNumber(selected);
+    };
+
+
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -83,9 +109,7 @@ const StockTable = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                                {stockList.map((item) => (
-                                                    <StockRow key={item} symbol={item} handleDelete={handleDelete} allowDelete={true} />
-                                                ))}
+                                                {displayItems}
                                             </tbody>
                                         </table>
                                     </div>
@@ -95,6 +119,17 @@ const StockTable = () => {
                         :
                         null}
                 </div>
+                <ReactPaginate
+                    previousLabel={"<"}
+                    nextLabel={">"}
+                    pageCount={pageCount}
+                    onPageChange={handlePageChange}
+                    containerClassName={"paginationBtns"}
+                    previousClassName={"previousBtn"}
+                    nextClassName={"nextBtn"}
+                    disabledClassName={"disabledBtn"}
+                    activeClassName={"activeBtn"}
+                />
             </>
         </>
     )

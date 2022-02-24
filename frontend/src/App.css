@@ -62,7 +62,7 @@ body {
 }
 
 .content {
-  padding: 0 5em 5em 5em;
+  padding: 0 5em 1em 5em;
 }
 
 .customStyles {
@@ -73,41 +73,40 @@ body {
 .paginationBtns {
     display: flex;
     width: 80%;
-    margin: 0 auto;
+    margin: 2.5em auto 0;
     padding-bottom: 2em;
     justify-content: center;
     font-weight: 600;
 }
 
-.paginationBtns li {
+.paginationBtns a {
     padding: 5px 15px;
     color: rgb(92, 92, 92);
     border: 1px solid rgb(199, 199, 199);
     background-color: white;
-    cursor: pointer;
     border-right-width: 0;
 }
 
 .paginationBtns a:hover {
-    color:rgb(138, 138, 138);
+    background-color:rgb(250, 250, 250);
 }
 
-.paginationBtns > .activeBtn {
+.paginationBtns > .activeBtn a {
     border: 1px solid #4f2ad3 !important;
     background-color: #eeeafd;
 }
 
-.activeBtn + li {
+.activeBtn + li > a {
     border-left-width: 0;
 }
 
-.previousBtn {
+.previousBtn a {
     border-radius: 5px 0 0 5px;
 }
 
-.paginationBtns > .next {
-    border-radius: 0 5px 5px 0;
+.nextBtn a {
     border-right-width: 1px;
+    border-radius: 0 5px 5px 0;
 }
 
 .activeBtn a {
