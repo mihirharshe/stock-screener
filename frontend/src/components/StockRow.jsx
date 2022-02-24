@@ -173,7 +173,7 @@ const StockRow = ({ symbol, handleDelete, allowDelete }) => {
                 <tr>
                     <td className="px-6 py-4 whitespace-nowrap" colSpan='6'>
                         {/* <HashLoader color={'#6366f1'} css={override} loading={true} size={60} /> */}
-                        <ScaleLoader color={'#6366f1'} css={override} loading={true} height={35} width={6} radius={10} />
+                        <ScaleLoader color={'#6366f1'} css={override} loading={true} height={40} width={5} />
                     </td>
                 </tr>
             }

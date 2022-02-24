@@ -1,22 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { css } from "@emotion/react";
 import axios from 'axios';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import { AiOutlineAreaChart } from 'react-icons/ai'
-/**
- * 
- * @todo : [input, setInput] state wasn't working properly. The state wasn't getting updated in input, need to look into that 
- *          Instead for now, stored the symbol directly in a variable and then used it.
- */
 
 const Modal = ({ stockList, setStockList }) => {
     const [showModal, setShowModal] = useState(false);
-    //const [input, setInput] = useState('');
     const [error, setError] = useState(false);
     const [exists, setExists] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const [fakeLoading, setFakeLoading] = useState(false);
 
     const baseUrl = '/api/v2/nse'
+
+    useEffect(() => {
+        setFakeLoading(true)
+        setTimeout(() => setFakeLoading(false), 2000)
+    }, [])
 
     const handleSubmit = async (e) => {
         setError(false);
@@ -24,8 +24,6 @@ const Modal = ({ stockList, setStockList }) => {
         setLoading(true);
         e.preventDefault();
         const data = new FormData(e.target);
-        //setInput(`${data.get('symbol')}`)
-        // var localStocks = JSON.parse(sessionStorage.getItem("localStocks") || "[]");
         const symbol = encodeURIComponent(data.get('symbol').toUpperCase());
         const token = localStorage.getItem('token');
         const res = await fetch(`${baseUrl}/equity/${symbol}`, {
@@ -70,7 +68,13 @@ const Modal = ({ stockList, setStockList }) => {
         setExists(false);
     }
 
-    const override = css`
+    const tableOverride = css`
+        display: block;
+        text-align: center;
+        margin: 5em 0 auto;
+    `
+
+    const modalOverride = css`
     display: block;
     margin: 0.5rem 0 0 0.25rem;
     `;
@@ -83,19 +87,23 @@ const Modal = ({ stockList, setStockList }) => {
                     type="button"
                     onClick={newModalClick}
                 >
-                    <AiOutlineAreaChart className="self-center"/><span className="text-sm"> add </span>
+                    <AiOutlineAreaChart className="self-center" /><span className="text-sm"> add </span>
                 </button>
                 :
-                <div className="text-4xl font-bold flex flex-col gap-5 justify-center items-center customStyles">
-                    Add some stocks to get started
-                    <button
-                        className="tracking-wide py-1 rounded-md inline-flex items-center px-2 justify-center text-white text-lg bg-gray-600 border border-transparent focus:outline-none focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
-                        type="button"
-                        onClick={newModalClick}
-                    >
-                        <AiOutlineAreaChart /><span className="text-sm"> add </span>
-                    </button>
-                </div>
+                (!fakeLoading ?
+                    <div className="text-4xl font-bold flex flex-col gap-5 justify-center items-center customStyles">
+                        Add some stocks to get started
+                        <button
+                            className="tracking-wide py-1 rounded-md inline-flex items-center px-2 justify-center text-white text-lg bg-gray-600 border border-transparent focus:outline-none focus:ring-4 focus:ring-gray-300 hover:opacity-90 ease-linear transition-all duration-150"
+                            type="button"
+                            onClick={newModalClick}
+                        >
+                            <AiOutlineAreaChart /><span className="text-sm"> add </span>
+                        </button>
+                    </div>
+                    :
+                    <ScaleLoader color={'#6366f1'} css={tableOverride} loading={true} height={40} width={5}/>
+                )
             }
 
             {showModal ? (
@@ -136,8 +144,8 @@ const Modal = ({ stockList, setStockList }) => {
                                             <span className="flex items-center font-semibold tracking-wide text-red-500 text-xs mt-1 ml-1">ALREADY EXISTS</span>
                                         ) : null}
                                         {isLoading ? (
-                                            <ScaleLoader color={'#6366f1'} css={override} loading={true} height={20} width={3} radius={10} />
-                                        ): null}
+                                            <ScaleLoader color={'#6366f1'} css={modalOverride} loading={true} height={20} width={3} radius={10} />
+                                        ) : null}
                                     </div>
                                     {/*footer*/}
                                     <div className="flex items-center justify-end p-4 border-t border-solid border-blueGray-200 rounded-b">

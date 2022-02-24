@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import StockRow from './StockRow';
-import Header from './Header';
-import Status from './Status';
 
-const Gainers = ({ logout }) => {
+const Gainers = () => {
 
     const [response, setResponse] = useState({});
 
@@ -36,8 +34,6 @@ const Gainers = ({ logout }) => {
 
     return (
         <>
-            <Header logout={logout}/>
-            <Status />
             <div className="content">
                 <div className="flex flex-col">
                     <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">

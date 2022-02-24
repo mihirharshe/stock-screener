@@ -14,6 +14,8 @@ import Gainers from './components/Gainers';
 import Losers from './components/Losers';
 import Login from './components/Login';
 import Register from './components/Register';
+import Header from './components/Header';
+import Status from './components/Status';
 
 import jwt from 'jsonwebtoken';
 
@@ -70,17 +72,38 @@ function App() {
                     )}
                     {auth && (
                         <>
-                            {/* <Header logout={logout}/>
-                            <Status /> */}
+
                             <Route
                                 path='/watchlist'
                                 element={
-                                    <StockTable
-                                        logout={logout}
-                                    />} />
+                                    <>
+                                        <Header logout={logout} />
+                                        <Status />
+                                        <StockTable />
+                                    </>
+                                }
+                            />
 
-                            <Route path='/gainers' element={<Gainers logout={logout} />} />
-                            <Route path='/losers' element={<Losers logout={logout} />} />
+                            <Route
+                                path='/gainers'
+                                element={
+                                    <>
+                                        <Header logout={logout} />
+                                        <Status />
+                                        <Gainers />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path='/losers'
+                                element={
+                                    <>
+                                        <Header logout={logout} />
+                                        <Status />
+                                        <Losers />
+                                    </>
+                                }
+                            />
                         </>)}
                     <Route path='/register' element={<Register />} />
 

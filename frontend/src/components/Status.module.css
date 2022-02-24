@@ -28,3 +28,18 @@
     margin-bottom: 2em;
 }
 
+.statusLoading {
+    font-weight: 500;
+    color: white;
+    background-color: #1F2937;
+    width: 200px;
+    height: 100px;
+    border-radius: 15px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
