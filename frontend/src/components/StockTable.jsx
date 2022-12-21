@@ -14,15 +14,13 @@ const StockTable = () => {
         try {
             const token = localStorage.getItem('token');
 
-            const res = await fetch(`/api/v1/stock/${symbol}`, {
+            await fetch(`/api/v1/stock/${symbol}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token
                 }
             })
-            console.log(await res.json());
             const newStock = stockList.filter((el) => el !== symbol)
-            console.log(newStock);
             setStockList(newStock)
         } catch (err) {
             console.error(err);
@@ -50,8 +48,6 @@ const StockTable = () => {
     const handlePageChange = ({ selected }) => {
         setPageNumber(selected);
     };
-
-
 
     useEffect(() => {
         const token = localStorage.getItem('token');

@@ -133,9 +133,9 @@ const Modal = ({ stockList, setStockList }) => {
                                     <div className="relative p-5 flex-auto">
                                         <label htmlFor="symbol-input" className="text-sm font-medium text-gray-900 block mb-2 dark:text-gray-300">Symbol</label>
                                         {(error || exists) ?
-                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-red-300 text-gray-900 sm:text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" required className="bg-gray-50 border-2 border-red-300 text-gray-900 sm:text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                             :
-                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" className="bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                            <input type="text" id="symbol-input" name="symbol" autoComplete="off" required className="bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                         }
                                         {error && (
                                             <span className="flex items-center font-semibold tracking-wide text-red-500 text-xs mt-1 ml-1">NOT FOUND</span>
